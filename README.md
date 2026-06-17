@@ -137,18 +137,18 @@ The final LDA model identifies the following topics:
 
 | Topic ID | Topic Name |
 |-----------|-------------|
-| 0 | Macroeconomy, Monetary Policy & Financial Markets |
-| 1 | Banking, Investment & Financial Services |
+| 0 | Macroeconomy & Financial Markets |
+| 1 | Banking & Financial Services |
 | 2 | Aviation & Air Transportation |
 | 3 | US-China Trade War & Geopolitics |
-| 4 | Automotive Industry, Technology & Corporate Leadership |
-| 5 | International Trade, Brexit & Economic Policy |
-| 6 | Big Tech, Digital Platforms & Antitrust |
+| 4 | Automotive Industry & Corporate Leadership |
+| 5 | International Trade & Economic Policy |
+| 6 | Big Tech & Digital Platforms |
 | 7 | COVID-19, Manufacturing & Labor Markets |
 | 8 | Corporate Earnings & Equity Markets |
-| 9 | Mergers, Acquisitions & Corporate Deals |
-| 10 | Oil, Energy & Commodity Markets |
-| 11 | Financial Regulation, Litigation & Corporate Scandals |
+| 9 | Mergers & Acquisitions |
+| 10 | Oil & Energy Markets |
+| 11 | Financial Regulation & Corporate Scandals |
 
 ---
 
@@ -198,7 +198,7 @@ topic-specific-sentiment/
 Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/topic-specific-sentiment.git
+git clone https://github.com/bennh/topic-specific-sentiment.git
 
 cd topic-specific-sentiment
 ```
