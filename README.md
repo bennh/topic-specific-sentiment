@@ -1,5 +1,4 @@
-# topic-specific-sentiment
-Discovering Topic-Specific Sentiment in Reuters Financial News
+# Discovering Topic-Specific Sentiment in Reuters Financial News
 
 ## Overview
 
