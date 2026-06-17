@@ -1,0 +1,23 @@
+name: topic-specific-sentiment
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.11
+  - numpy
+  - pandas
+  - scikit-learn
+  - scipy
+  - nltk
+  - matplotlib
+  - seaborn
+  - jupyter
+  - notebook
+  - pip
+
+  - pip:
+      - torch
+      - transformers
+      - joblib
+      - tqdm
