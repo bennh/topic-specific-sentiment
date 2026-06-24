@@ -4,7 +4,7 @@
 
 This repository contains the code, data processing pipeline, and experimental results for the project:
 
-**Beyond Aggregate News Sentiment: Topic-Specific Sentiment Analysis of Financial News**
+**Discovering Topic-Specific Sentiment in Reuters Financial News**
 
 The project extends traditional aggregate news sentiment analysis by decomposing financial news into latent topics and estimating sentiment at the topic level. Using Reuters financial news headlines, Latent Dirichlet Allocation (LDA), and FinBERT, we investigate how sentiment varies across economic and financial topics over time.
 
