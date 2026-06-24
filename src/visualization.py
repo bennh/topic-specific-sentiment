@@ -17,8 +17,8 @@ mpl.rcParams["figure.dpi"] = 300
 mpl.rcParams["savefig.dpi"] = 300
 
 # Typography
-mpl.rcParams["font.family"] = "serif"
-mpl.rcParams["font.size"] = 11
+mpl.rcParams["font.family"] = "STIXGeneral"
+mpl.rcParams["mathtext.fontset"] = "stix"
 
 mpl.rcParams["axes.labelsize"] = 11
 mpl.rcParams["axes.titlesize"] = 12
@@ -29,29 +29,47 @@ mpl.rcParams["ytick.labelsize"] = 10
 mpl.rcParams["legend.fontsize"] = 10
 
 # Grid
-mpl.rcParams["grid.alpha"] = 0.3
+mpl.rcParams["grid.alpha"] = 0.15
 mpl.rcParams["grid.linestyle"] = "--"
+mpl.rcParams["grid.linewidth"] = 0.5
 
 # Export
 mpl.rcParams["savefig.bbox"] = "tight"
 
 
-BLUE = "#4C72B0"
-RED = "#C44E52"
-GREEN = "#55A868"
-PURPLE = "#8172B2"
-GRAY = "#B0B0B0"
+BLUE = "#2F5D8A"
+RED = "#B23A48"
 
-NEGATIVE_COLOR = RED
+LIGHT_BLUE = "#D6E6F5"
+
+DARK_GRAY = "#4D4D4D"
+MID_GRAY = "#808080"
+LIGHT_GRAY = "#D9D9D9"
+
 POSITIVE_COLOR = BLUE
-NEUTRAL_COLOR = GRAY
+NEGATIVE_COLOR = RED
+NEUTRAL_COLOR = MID_GRAY
 
 SENTIMENT_COLORS = {
     "negative": RED,
-    "neutral": GRAY,
+    "neutral": MID_GRAY,
     "positive": BLUE
 }
 
+TOPIC_LABELS = {
+    "Macroeconomy & Financial Markets": "T0",
+    "Banking & Financial Services": "T1",
+    "Aviation & Air Transportation": "T2",
+    "US-China Trade War & Geopolitics": "T3",
+    "Automotive Industry & Corporate Leadership": "T4",
+    "International Trade & Economic Policy": "T5",
+    "Big Tech & Digital Platforms": "T6",
+    "COVID-19, Manufacturing & Labor Markets": "T7",
+    "Corporate Earnings & Equity Markets": "T8",
+    "Mergers & Acquisitions": "T9",
+    "Oil & Energy Markets": "T10",
+    "Financial Regulation & Corporate Scandals": "T11"
+}
 
 # --------------------------------------------------
 # Figure 1
@@ -69,6 +87,11 @@ def plot_topic_distribution(
         .sort_values(ascending=False)
     )
 
+    topic_counts.index = [
+        TOPIC_LABELS[t]
+        for t in topic_counts.index
+    ]
+
     fig, ax = plt.subplots(
         figsize=(10, 6)
     )
@@ -76,15 +99,9 @@ def plot_topic_distribution(
     topic_counts.plot(
         kind="bar",
         color=BLUE,
-        edgecolor="black",
-        linewidth=0.8,
-        width=0.8,
+        edgecolor="none",
+        width=0.6,
         ax=ax
-    )
-
-    ax.set_title(
-        "Topic Distribution",
-        pad=12
     )
 
     ax.set_ylabel(
@@ -95,7 +112,7 @@ def plot_topic_distribution(
 
     ax.tick_params(
         axis="x",
-        rotation=85
+        rotation=0
     )
 
     ax.spines["top"].set_visible(False)
@@ -148,12 +165,16 @@ def plot_sentiment_by_topic(
         figsize=(14, 7)
     )
 
+    topic_labels = [
+        TOPIC_LABELS[t]
+        for t in sentiment.index
+    ]
+
     bars = ax.barh(
-        sentiment.index,
+        topic_labels,
         sentiment.values,
         color=colors,
-        edgecolor="black",
-        linewidth=0.8
+        edgecolor="none"
     )
 
     # Value labels
@@ -192,11 +213,6 @@ def plot_sentiment_by_topic(
         0,
         color="black",
         linewidth=1.2
-    )
-
-    ax.set_title(
-        "Average Sentiment by Topic",
-        pad=12
     )
 
     ax.set_xlabel(
@@ -265,7 +281,7 @@ def plot_sentiment_dynamics(
     ax.plot(
         overall_ts.index,
         overall_ts.values,
-        color="black",
+        color=DARK_GRAY,
         linestyle="--",
         linewidth=2.5,
         marker="o",
@@ -278,10 +294,9 @@ def plot_sentiment_dynamics(
     # -------------------------
 
     topic_colors = [
-        RED,
-        BLUE,
-        GREEN,
-        PURPLE
+      "#08306B",
+      "#2171B5",
+      "#6BAED6",
     ]
 
     topic_markers = [
@@ -318,7 +333,7 @@ def plot_sentiment_dynamics(
             linewidth=2,
             marker=marker,
             markersize=4,
-            label=topic
+            label=TOPIC_LABELS[topic]
         )
 
     ax.axhline(
@@ -326,11 +341,6 @@ def plot_sentiment_dynamics(
         color="black",
         linewidth=1,
         alpha=0.6
-    )
-
-    ax.set_title(
-        "Topic-Specific Sentiment Dynamics",
-        pad=12
     )
 
     ax.set_xlabel(
@@ -351,8 +361,8 @@ def plot_sentiment_dynamics(
 
     ax.legend(
         frameon=False,
-        ncol=2,
-        loc="best"
+        ncol=1,
+        loc="upper left"
     )
 
     plt.tight_layout()
@@ -400,14 +410,21 @@ def plot_topic_sentiment_heatmap(
         )
     )
 
+    heatmap_data.index = [
+        TOPIC_LABELS[t]
+        for t in heatmap_data.index
+    ]
+
     fig, ax = plt.subplots(
         figsize=(16, 7)
     )
 
     sns.heatmap(
         heatmap_data,
-        cmap="RdBu_r",
+        cmap="vlag",
         center=0,
+        vmin=-0.5,
+        vmax=0.5,
         linewidths=0.3,
         linecolor="white",
         cbar_kws={
@@ -415,11 +432,6 @@ def plot_topic_sentiment_heatmap(
             "Average Sentiment Score"
         },
         ax=ax
-    )
-
-    ax.set_title(
-        "Topic Sentiment Heatmap",
-        pad=12
     )
 
     ax.set_xlabel(
@@ -464,6 +476,11 @@ def plot_sentiment_confidence(
 
     temp = df.copy()
 
+    temp["topic_id"] = (
+        temp["topic_name"]
+        .map(TOPIC_LABELS)
+    )
+
     temp["confidence"] = (
         temp[
             [
@@ -476,7 +493,7 @@ def plot_sentiment_confidence(
     )
 
     topic_order = (
-        temp.groupby("topic_name")
+        temp.groupby("topic_id")
         ["confidence"]
         .mean()
         .sort_values()
@@ -484,15 +501,15 @@ def plot_sentiment_confidence(
     )
 
     fig, ax = plt.subplots(
-        figsize=(11, 7)
+        figsize=(12, 6)
     )
 
     sns.boxplot(
         data=temp,
-        y="topic_name",
-        x="confidence",
+        y="confidence",
+        x="topic_id",
         order=topic_order,
-        color=BLUE,
+        color=LIGHT_BLUE,
         width=0.6,
         fliersize=2,
         linewidth=1,
@@ -504,31 +521,26 @@ def plot_sentiment_confidence(
             min(2000, len(temp)),
             random_state=42
         ),
-        y="topic_name",
-        x="confidence",
+        y="confidence",
+        x="topic_id",
         order=topic_order,
         color="black",
-        alpha=0.15,
+        alpha=0.08,
         size=2,
         ax=ax
     )
 
-    ax.set_title(
-        "Sentiment Confidence by Topic",
-        pad=12
-    )
-
-    ax.set_xlabel(
+    ax.set_ylabel(
         "Prediction Confidence"
     )
 
-    ax.set_ylabel("")
+    ax.set_xlabel("")
 
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
     ax.grid(
-        axis="x",
+        axis="y",
         linestyle="--",
         alpha=0.3
     )
@@ -587,32 +599,25 @@ def plot_topic_similarity(
     ax.scatter(
         coords[:, 0],
         coords[:, 1],
-        s=180,
+        s=140,
         color=BLUE,
-        edgecolor="black",
-        linewidth=1,
-        alpha=0.85
+        edgecolor="none",
+        alpha=1
     )
 
-    for i, topic in enumerate(
-        topic_names
-    ):
+    for i in range(len(coords)):
 
         ax.annotate(
-            topic,
+            f"T{i}",
             (
-                coords[i, 0],
-                coords[i, 1]
+                coords[i,0],
+                coords[i,1]
             ),
-            xytext=(5, 5),
+            xytext=(3,3),
             textcoords="offset points",
-            fontsize=9
+            fontsize=8,
+            fontweight="bold"
         )
-
-    ax.set_title(
-        "Topic Similarity Map",
-        pad=12
-    )
 
     ax.axhline(
         0,
